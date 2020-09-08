@@ -27,6 +27,10 @@ class LumenNewrelicMiddleware
     public function getTransactionName(Request $request)
     {
         $matchedRoute = $this->router->getRoutes()->match($request);
+        $routeName = $matchedRoute->getName();
+        if (str_starts_with($routeName, 'generated::')) {
+            $routeName = null;
+        }
 
         return str_replace(
             [
@@ -39,7 +43,7 @@ class LumenNewrelicMiddleware
             [
                 $matchedRoute->getActionName(),
                 $request->getMethod(),
-                $matchedRoute->getName() ?? $matchedRoute->getActionName(),
+                $routeName ?? $matchedRoute->getActionName(),
                 $request->getPathInfo(),
                 $request->getUri(),
             ],

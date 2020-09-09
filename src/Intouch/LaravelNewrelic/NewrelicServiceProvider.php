@@ -201,6 +201,10 @@ class NewrelicServiceProvider extends ServiceProvider
 	protected function getRoute()
 	{
 		$name = $this->app['router']->currentRouteName();
+		if (str_starts_with($name, 'generated::')) {
+			$name = null;
+		}
+
 		if ( !$name )
 		{
 			$name = $this->getController();

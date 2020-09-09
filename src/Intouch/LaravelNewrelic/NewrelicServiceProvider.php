@@ -56,8 +56,8 @@ class NewrelicServiceProvider extends ServiceProvider
 	{
 		$this->app->singleton(
 			'newrelic',
-			function ( $app ) {
-				return new Newrelic( $app['config']->get( 'newrelic.throw_if_not_installed' ) );
+			function ($app) {
+				return new Newrelic($app['config']->get('newrelic.throw_if_not_installed'));
 			}
 		);
 	}
@@ -69,7 +69,7 @@ class NewrelicServiceProvider extends ServiceProvider
 	 */
 	public function provides()
 	{
-		return [ 'newrelic' ];
+		return ['newrelic'];
 	}
 
 	/**
@@ -79,9 +79,9 @@ class NewrelicServiceProvider extends ServiceProvider
 	{
 		$app = $this->app;
 
-		if ($app['config']->get( 'newrelic.auto_name_transactions' )) {
-			$app['events']->listen(RouteMatched::class, function (RouteMatched $routeMatched) use ( $app ) {
-				$app['newrelic']->nameTransaction( $this->getTransactionName() );
+		if ($app['config']->get('newrelic.auto_name_transactions')) {
+			$app['events']->listen(RouteMatched::class, function (RouteMatched $routeMatched) use ($app) {
+				$app['newrelic']->nameTransaction($this->getTransactionName());
 			});
 		}
 	}
@@ -93,15 +93,15 @@ class NewrelicServiceProvider extends ServiceProvider
 	{
 		$app = $this->app;
 
-		$app['queue']->before(function (JobProcessing $event) use ( $app ) {
-			$app['newrelic']->backgroundJob( true );
-			$app['newrelic']->startTransaction( ini_get('newrelic.appname') );
-			if ($app['config']->get( 'newrelic.auto_name_jobs' )) {
-				$app['newrelic']->nameTransaction( $this->getJobName($event) );
+		$app['queue']->before(function (JobProcessing $event) use ($app) {
+			$app['newrelic']->backgroundJob(true);
+			$app['newrelic']->startTransaction(ini_get('newrelic.appname'));
+			if ($app['config']->get('newrelic.auto_name_jobs')) {
+				$app['newrelic']->nameTransaction($this->getJobName($event));
 			}
 		});
 
-		$app['queue']->after(function (JobProcessed $event) use ( $app ) {
+		$app['queue']->after(function (JobProcessed $event) use ($app) {
 			$app['newrelic']->endTransaction();
 		});
 	}
@@ -128,7 +128,7 @@ class NewrelicServiceProvider extends ServiceProvider
 				$this->getPath(),
 				$this->getUri(),
 			],
-			$this->app['config']->get( 'newrelic.name_provider' )
+			$this->app['config']->get('newrelic.name_provider')
 		);
 	}
 
@@ -149,7 +149,7 @@ class NewrelicServiceProvider extends ServiceProvider
 				$event->connectionName,
 				$event->job->resolveName(),
 			],
-			$this->app['config']->get( 'newrelic.job_name_provider' )
+			$this->app['config']->get('newrelic.job_name_provider')
 		);
 	}
 
@@ -160,7 +160,7 @@ class NewrelicServiceProvider extends ServiceProvider
 	 */
 	protected function getMethod()
 	{
-		return strtoupper( $this->app['router']->getCurrentRequest()->method() );
+		return strtoupper($this->app['router']->getCurrentRequest()->method());
 	}
 
 	/**
